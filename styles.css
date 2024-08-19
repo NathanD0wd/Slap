@@ -72,8 +72,8 @@ body {
 /* Central Pile for Cards */
 #card-pile {
     position: relative;
-    width: 150px;
-    height: 225px;
+    width: 155px;
+    height: 215px;
     background-color: #333;
     border-radius: 10px;
     display: flex;
@@ -86,4 +86,9 @@ body {
     margin: auto;
 
     cursor: pointer;
+}
+
+#card-img {
+    height: 225px;
+    width: 150px;
 }
