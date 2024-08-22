@@ -59,7 +59,8 @@ function isFace(cardValue) {
 
 // Returns card limit of given face
 function faceCardLimit(cardValue) {
-    switch (cardValue) {
+    justVal = cardValue.split('-')[1];
+    switch (justVal) {
         case 'J': return 1;
         case 'Q': return 2;
         case 'K': return 3;
@@ -105,11 +106,24 @@ function endGame(winner) {
 
 // Plays card for certain player
 function handleTurn(player) {
-    const card = playerHands[player].shift();
-    pile.push(card);
-    updatePile();
-    showCardCount();
-    justFalseSlapped = false;
+    const card = playerHands[player].shift(); // Top card of player hand
+    pile.push(card); // Add to pile
+    // If a face has been played decrement turns available to play
+    if (facePlayed) {
+        faceCardTurns -= 1;
+    }
+    updatePile(); // Update pile
+    // Check if face card turns has hit 0 and give pile if it has
+    if (facePlayed && faceCardTurns == 0) {
+        setTimeout(function() { // Give cards after 0.5 seconds
+            if (currentPlayer == 1)
+                givePileTo(0);
+            else
+                givePileTo(1);
+        }, 500);
+    }
+    showCardCount(); // Update card counts
+    justFalseSlapped = false; // Reset false slap tracker
 
     // Checks if game is over
     let winner = checkForWin();
@@ -117,18 +131,18 @@ function handleTurn(player) {
         endGame(winner);
     }
 
-    // Swaps current player
-    if (currentPlayer == 0) { 
-        currentPlayer = 1;
-    }
-    else {
-        currentPlayer = 0;
+    // Swaps current player if a face hasn't been played or the top card is a face
+    if (topIsFace || !facePlayed) {
+        if (currentPlayer == 0)
+            currentPlayer = 1;
+        else
+            currentPlayer = 0;
     }
 
-    if (topIsFace) {
-        handleFace(currentPlayer);
+    // If it's bot turn, simulate
+    if (currentPlayer == 0) {
+        botTurn();
     }
-    return card;
 }
 
 // Updates center pile to show top card
@@ -142,8 +156,16 @@ function updatePile() {
     }
     // Get name of top card
     let topCard = pile[pile.length - 1]
+    
+    // Check if top is face
     topIsFace = isFace(topCard);
+    if (topIsFace) {
+        facePlayed = true; // Set true once one face has been played
+        faceCardTurns = faceCardLimit(topCard);
+    }
+
     // Set the innerHTML to display the SVG
+    console.log(topCard);
     cardPileDiv.innerHTML = `<img id="card-img" src="icons/cards/${topCard}.svg" alt="${topCard}">`;
 }
 
@@ -158,6 +180,15 @@ function givePileTo(player) {
     let winner = checkForWin();
     if (winner != -1) {
         endGame(winner);
+    }
+
+    facePlayed = false;
+    faceCardTurns = 0;
+
+    if (currentPlayer == 0) {
+        setTimeout(function() {
+            botTurn();
+        }, 400);
     }
 }
 
@@ -178,19 +209,24 @@ function slapPunishment(player) {
 // Gives pile to slapper if it is, replaces bottom card if not
 function checkForSlap(slapper) {
     canSlap = false;
-
-    if (justFalseSlapped && slapper != -1) {
+    if (pile.length < 2) return canSlap; // return if 1 or less cards
+    
+    // checks if two false slaps in a row
+    if (justFalseSlapped && slapper != -1) { 
         slapPunishment(slapper);
         return;
     }
-
-    if (pile.length < 2) return canSlap;
 
     const topCard = pile[pile.length - 1].split('-')[1];
     const secondCard = pile[pile.length - 2].split('-')[1];
 
     // Check for doubles
     if (topCard === secondCard) {
+        canSlap = true;
+    }
+
+    // Check for marriage
+    if ((topCard == 'K' && secondCard == 'Q') || (topCard == 'Q' && secondCard == 'K')) {
         canSlap = true;
     }
 
@@ -211,13 +247,29 @@ function checkForSlap(slapper) {
     // If correct slap for player, give them pile
     if (canSlap && slapper != -1) {
         givePileTo(slapper);
+        return canSlap;
     }
 
+    // Punishment if you can't slap
     if ( !canSlap && slapper != -1) {
         slapPunishment(slapper);
     }
 
     return canSlap;
+}
+
+// Simulate the bots turn
+function botTurn() {
+    // PROBLEM HERE: calling botTurn in the handleTurn call, so there are nested slap checks when its facing a face card
+    setTimeout(function() { // Computer plays card after 1.0 second
+        if (currentPlayer == 0)
+            handleTurn(currentPlayer);
+    }, 500);
+    setTimeout(function() { // Computer slaps after 0.4 seconds
+        if (checkForSlap(-1)) {
+            givePileTo(0);
+        }
+    }, 1000);
 }
 
 // Starts game when enter is pressed and a game is not already running
@@ -243,19 +295,14 @@ document.addEventListener('keydown', function(event) {
     }
 });
 
-
 // If player area is pressed, plays card
 document.getElementById('your-player-area').addEventListener('click', () => {
-    if (currentPlayer === 1) {
+    if (currentPlayer === 1 && gameRunning == 1) {
         handleTurn(currentPlayer);
-        setTimeout(function() { // Computer slaps after 0.5 seconds
+        setTimeout(function() { // Computer slaps after 0.4 seconds
             if (checkForSlap(-1))
                 givePileTo(0);
         }, 400);
-        setTimeout(function() { // Computer plays card after another 1.5 seconds
-            if (currentPlayer == 0)
-                handleTurn(currentPlayer);
-        }, 1000);
     }
 });
 
