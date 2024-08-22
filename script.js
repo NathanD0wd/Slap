@@ -10,6 +10,11 @@ let faceCardTurns = 0; // Remaining turns after face card is played
 let justFalseSlapped = false; // True if there was a false slap on current top card
 // Prevents slapping when new bottom card fulfils top bottom condition
 
+// Utility sleep function that returns a promise
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 // Game Set Up
 function createDeck() {
     const suits = ['HEART', 'DIAMOND', 'CLUB', 'SPADE'];
@@ -141,6 +146,7 @@ function handleTurn(player) {
 
     // If it's bot turn, simulate
     if (currentPlayer == 0) {
+        botSlapCheck();
         botTurn();
     }
 }
@@ -188,7 +194,7 @@ function givePileTo(player) {
     if (currentPlayer == 0) {
         setTimeout(function() {
             botTurn();
-        }, 400);
+        }, 500);
     }
 }
 
@@ -259,17 +265,20 @@ function checkForSlap(slapper) {
 }
 
 // Simulate the bots turn
-function botTurn() {
-    // PROBLEM HERE: calling botTurn in the handleTurn call, so there are nested slap checks when its facing a face card
-    setTimeout(function() { // Computer plays card after 1.0 second
-        if (currentPlayer == 0)
-            handleTurn(currentPlayer);
-    }, 500);
-    setTimeout(function() { // Computer slaps after 0.4 seconds
-        if (checkForSlap(-1)) {
-            givePileTo(0);
-        }
-    }, 1000);
+async function botTurn() {
+    await sleep(1000);
+    if (currentPlayer == 0)
+        handleTurn(currentPlayer);
+    botSlapCheck();
+}
+
+// Check for a slap for the bot and give cards if so
+async function botSlapCheck() {
+    await sleep(1000);
+    console.log("Bot checks for slap");
+    if (checkForSlap(-1)) {
+        givePileTo(0);
+    }
 }
 
 // Starts game when enter is pressed and a game is not already running
@@ -288,7 +297,7 @@ document.getElementById('card-pile').addEventListener('click', () => {
     checkForSlap(1);
 });
 
-// If space 
+// If space, slap for player
 document.addEventListener('keydown', function(event) {
     if (event.key === ' ') {
         checkForSlap(1);
@@ -299,10 +308,6 @@ document.addEventListener('keydown', function(event) {
 document.getElementById('your-player-area').addEventListener('click', () => {
     if (currentPlayer === 1 && gameRunning == 1) {
         handleTurn(currentPlayer);
-        setTimeout(function() { // Computer slaps after 0.4 seconds
-            if (checkForSlap(-1))
-                givePileTo(0);
-        }, 400);
     }
 });
 
