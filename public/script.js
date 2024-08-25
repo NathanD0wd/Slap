@@ -94,6 +94,16 @@ document.getElementById('bottom-player-area').addEventListener('click', () => {
     }
 });
 
+// Plays card when press onto player pile
+document.getElementById('bottom-player-cards').addEventListener('click', () => {
+    if (gameRunning == 1) {
+        socket.emit('playCard', playerNumber - 1);
+    }
+    else {
+        socket.emit('startGame');
+    }
+});
+
 // Restart the game with esc
 document.addEventListener('keydown', function(event) {
     if (event.key === 'Escape') {
