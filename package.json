@@ -1,10 +1,10 @@
 {
   "name": "slap",
   "version": "1.0.0",
-  "description": "",
+  "description": "A 1v1 implementation of the card game slap",
   "main": "script.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",
@@ -12,5 +12,8 @@
   "dependencies": {
     "express": "^4.19.2",
     "socket.io": "^4.7.5"
+  },
+  "engines": {
+    "node": ">=14.0.0"
   }
 }
