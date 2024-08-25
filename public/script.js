@@ -6,6 +6,20 @@ let gameRunning = false;
 let currentPlayer = 0; 
 let eventFlag = true; // Pauses all events while in sleep
 
+// Function to hide and display certain elements while game is or isn't running
+function updateVisibility() {
+    const elementsForPlay = document.querySelectorAll('.inPlay');
+    const elementsForRest = document.querySelectorAll('.notInPlay');
+    
+    if (gameRunning) {
+        elementsForRest.forEach(element => element.classList.add('hidden'));
+        elementsForPlay.forEach(element => element.classList.remove('hidden'));
+    } else {
+        elementsForRest.forEach(element => element.classList.remove('hidden'));
+        elementsForPlay.forEach(element => element.classList.add('hidden'));
+    }
+}
+
 // Displays cards in each players hands
 socket.on('showCardCount', (player1CardCount, player2CardCount) => {
     let player = document.getElementById('bottom-player-area');
@@ -32,7 +46,7 @@ socket.on('updatePile', (topCard) => {
     }
 
     // Set the innerHTML to display the SVG
-    cardPileDiv.innerHTML = `<img id="card-img" src="icons/cards/${topCard}.svg" alt="${topCard}">`;
+    cardPileDiv.innerHTML = `<img class="card-img" src="icons/cards/${topCard}.svg" alt="${topCard}">`;
 });
 
 socket.on('falseSlap', (card) => {
@@ -42,10 +56,12 @@ socket.on('falseSlap', (card) => {
 socket.on('gameOver', (winner) => {
     gameRunning = false;
     alert('Player ' + winner + " is the winner!!!");
+    updateVisibility();
 });
 
 socket.on('gameStart', () => {
     gameRunning = true;
+    updateVisibility();
 });
 
 // Starts game when enter is pressed and a game is not already running
@@ -68,9 +84,13 @@ document.addEventListener('keydown', function(event) {
 });
 
 // If player area is pressed, plays card
+// If game isn't running, starts a game. Used for phone play
 document.getElementById('bottom-player-area').addEventListener('click', () => {
     if (gameRunning == 1) {
         socket.emit('playCard', playerNumber - 1);
+    }
+    else {
+        socket.emit('startGame');
     }
 });
 
@@ -78,7 +98,6 @@ document.getElementById('bottom-player-area').addEventListener('click', () => {
 document.addEventListener('keydown', function(event) {
     if (event.key === 'Escape') {
         socket.emit('endGame');
-        gameRunning = false;
     }
 });
 
@@ -89,7 +108,6 @@ socket.on('playerAssigned', (number) => {
     playerNumber = number;
     alert(`You are Player ${playerNumber}`);
 });
-
 
 socket.on('roomFull', () => {
     window.onload = function() {

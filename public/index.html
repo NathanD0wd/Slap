@@ -7,17 +7,24 @@
     <link rel="stylesheet" href="styles.css"> <!-- Link to your CSS file -->
 </head>
 <body>
-    <h2>HAPPY BIRTHDAY CHLOE!!!!</h2>
-    <h3>Welcome to your doom... at my hands in slap</h3>
+    <div id="heading_container">
+        <h2 class="notInPlay">HAPPY BIRTHDAY CHLOE!!!!</h2>
+        <h3 class="notInPlay">Welcome to your doom... at my hands in slap (:</h3>
+    </div>
     <!-- Main Game Container -->
     <div id="game-container">
         <!-- Top Player Area -->
-        <div id="top-player-area">
-
+        <div id="top-player-area">     
         </div>
+        <div class="top-player-cards inPlay hidden">
+            <img class="card-img" src="icons/cards/CARD_BACK.svg" alt="Card Back">
+        </div>
+
         <!-- Bottom Player Area (Larger) -->
         <div id="bottom-player-area">
-                   
+        </div>
+        <div class="bottom-player-cards inPlay hidden">
+            <img class="card-img" src="icons/cards/CARD_BACK.svg" alt="Card Back">
         </div>
 
         <!-- Central Pile for Cards -->
