@@ -66,8 +66,7 @@ io.on('connection', (socket) => {
 
     // Ending the game
     socket.on('endGame', () => {
-        io.emit('gameOver');
-        endGame("No one");
+        endGame("neither of you");
     });
 });
 
