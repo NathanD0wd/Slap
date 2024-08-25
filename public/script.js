@@ -41,12 +41,6 @@ socket.on('falseSlap', (card) => {
 
 socket.on('gameOver', (winner) => {
     gameRunning = false;
-    if (winner == -1){
-        alert('No one is the winner!')
-    }
-    else {
-        winner += 1
-    }
     alert('Player ' + winner + " is the winner!!!");
 });
 

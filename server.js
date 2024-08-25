@@ -66,14 +66,18 @@ io.on('connection', (socket) => {
 
     // Ending the game
     socket.on('endGame', () => {
-        io.emit('gameOver');
-        endGame("No one");
+        endGame("neither player");
     });
 });
 
-server.listen(3000, () => {
-    console.log('Server is listening on http://localhost:3000');
+// Set the server to listen on the port provided by Heroku or default to 3000
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
 });
+// server.listen(3000, () => {
+//     console.log('Server is listening on http://localhost:3000');
+// });
 
 
 // GAME LOGIC
