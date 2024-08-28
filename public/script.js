@@ -75,6 +75,10 @@ socket.on('slap', (slapType, slapper) => {
             break;
         default: break;
     }
+
+    if (happenings.children.length > 5) {
+        happenings.removeChild(happenings.firstChild);
+    }
 });
 
 // Updates game has ended
