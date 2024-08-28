@@ -49,7 +49,7 @@ io.on('connection', (socket) => {
     });
 
     // Slapping
-    socket.on('slap', (player) => {
+    socket.on('checkSlap', (player) => {
         slapType = checkForSlap(player);
         io.emit('slap', (slapType, player));
     });
@@ -196,6 +196,8 @@ function givePileTo(player) {
 
     facePlayed = false;
     faceCardTurns = 0;
+
+    io.emit('isTurn', currentPlayer + 1);
 }
 
 // Places card on bottom of deck for incorrect slapper
@@ -244,7 +246,7 @@ function checkForSlap(slapper) {
         }
     }
 
-    // Check for top and bottom match
+    // Check for mega sando
     const bottomCard = pile[0].split('-')[1];
     if (topCard === bottomCard) {
         canSlap = 3;

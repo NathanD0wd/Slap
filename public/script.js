@@ -56,21 +56,22 @@ socket.on('falseSlap', (card) => {
 });
 
 socket.on('slap', (slapType, slapper) => {
+    let happenings = document.getElementById('slaps');
     switch(slapType) {
-        case -1:
-            alert('Player ' + slapper + ' did a bad slap...');
+        case -1: 
+            happenings.innerHTML += `<p>Player ${slapper} did an oopsie...<p>`;
             break;
         case 1:
-            alert('Player' + slapper + ' slapped a pair!');
+            happenings.innerHTML += `<p>Player ${slapper} slapped a pair!<p>`;
             break;
         case 2:
-            alert('Player' + slapper + ' slapped a sando!');
+            happenings.innerHTML += `<p>Player ${slapper} slapped a sando!<p>`;
             break;
         case 3:
-            alert('Player' + slapper + ' slapped a mega sando!');
+            happenings.innerHTML += `<p>Player ${slapper} slapped a mega sando!<p>`;
             break;
         case 4:
-            alert('Player' + slapper + ' slapped a marriage!');
+            happenings.innerHTML += `<p>Player ${slapper} slapped a marriage!<p>`;
             break;
         default: break;
     }
@@ -111,13 +112,13 @@ document.addEventListener('keydown', function(event) {
 
 // Counts as slap when middle pile is pressed
 document.getElementById('card-pile').addEventListener('click', () => {
-    socket.emit('slap',  playerNumber - 1);
+    socket.emit('checkSlap',  playerNumber - 1);
 });
 
 // If space, slap for player
 document.addEventListener('keydown', function(event) {
     if (event.key === ' ') {
-        socket.emit('slap',  playerNumber - 1);
+        socket.emit('checkSlap',  playerNumber - 1);
     }
 });
 
