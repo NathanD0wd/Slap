@@ -251,13 +251,13 @@ function checkForSlap(slapper) {
     }
 
     // If correct slap for player, give them pile
-    if (canSlap && slapper != -1) {
+    if (canSlap != -1 && slapper != -1) {
         givePileTo(slapper);
         return canSlap;
     }
 
     // Punishment if you can't slap
-    if ( !canSlap && slapper != -1) {
+    if ( canSlap == -1 && slapper != -1) {
         slapPunishment(slapper);
     }
 

@@ -1,6 +1,7 @@
 // Server info
 const socket = io();
 let playerNumber = null;
+let playerName = null;
 
 let gameRunning = false;
 let currentPlayer = 0; 
@@ -90,11 +91,14 @@ socket.on('gameStart', () => {
 
 socket.on('isTurn', (player) => {
     let playerCardArea = document.querySelector('.bottom-player-cards');
+    let opponentCardArea = document.querySelector('.top-player-cards');
     if (player == playerNumber) {
         playerCardArea.classList.add('isTurn');
+        opponentCardArea.classList.remove('isTurn');
     }
     else {
         playerCardArea.classList.remove('isTurn');
+        opponentCardArea.classList.add('isTurn');
     }
 });
 
