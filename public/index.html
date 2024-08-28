@@ -30,6 +30,29 @@
         <!-- Central Pile for Cards -->
         <div id="card-pile">
         </div>
+
+        <div id="controls">
+            <h3>Controls</h3>
+            <p>
+                'enter': start game <br>
+                'esc': end game <br>
+                'space' or press center pile: slap <br>
+                press player area/cards: play card
+            </p>
+        </div>
+
+        <div id="gameUpdates" class="inPlay hidden">
+            <div id="gameState">
+                <h2>Game State</h2>
+                <h3>Bottom Card:</h3>
+                <h3>Second Card: </h3>
+                <h3>Third Card: </h3>
+            </div>
+            
+            <div id="slaps">
+
+            </div>
+        </div>
     </div>
     
     <script src="/socket.io/socket.io.js"></script>

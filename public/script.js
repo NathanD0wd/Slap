@@ -56,11 +56,22 @@ socket.on('falseSlap', (card) => {
 
 socket.on('slap', (slapType, slapper) => {
     switch(slapType) {
-        case -1: alert('Player ' + slapper + ' did a bad slap...');
-        case 1: alert('Player' + slapper + ' slapped a pair!');
-        case 2: alert('Player' + slapper + ' slapped a sando!');
-        case 3: alert('Player' + slapper + ' slapped a mega sando!');
-        case 4: alert('Player' + slapper + ' slapped a marriage!');
+        case -1:
+            alert('Player ' + slapper + ' did a bad slap...');
+            break;
+        case 1:
+            alert('Player' + slapper + ' slapped a pair!');
+            break;
+        case 2:
+            alert('Player' + slapper + ' slapped a sando!');
+            break;
+        case 3:
+            alert('Player' + slapper + ' slapped a mega sando!');
+            break;
+        case 4:
+            alert('Player' + slapper + ' slapped a marriage!');
+            break;
+        default: break;
     }
 });
 
@@ -78,9 +89,12 @@ socket.on('gameStart', () => {
 });
 
 socket.on('isTurn', (player) => {
+    let playerCardArea = document.querySelector('.bottom-player-cards');
     if (player == playerNumber) {
-        let playerCardArea = document.querySelector('.bottom-player-cards');
         playerCardArea.classList.add('isTurn');
+    }
+    else {
+        playerCardArea.classList.remove('isTurn');
     }
 });
 

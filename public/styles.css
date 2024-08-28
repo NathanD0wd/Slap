@@ -172,6 +172,34 @@ p {
     display: none;
 }
 
+/* Class to show who's turn it is */
 .isTurn {
-    border: 10px solid #01270f;
+    border: 5px solid #5eff00;
+}
+
+/* Shows Controls */
+#controls {
+    grid-column: 1 / 2;
+    grid-row: 2 / 3;
+
+    margin: auto;
+}
+
+/* Add margin to top of list of controls */
+#controls p {
+    margin-top: 20px;
+}
+
+#gameState {
+    grid-column: 3 / 4;
+    grid-row: 1 / 2;
+
+    margin: auto;
+}
+
+#slaps {
+    grid-column: 3 / 4;
+    grid-row: 2 / 3;
+
+    margin: auto;
 }
