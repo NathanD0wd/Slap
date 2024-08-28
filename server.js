@@ -51,7 +51,7 @@ io.on('connection', (socket) => {
     // Slapping
     socket.on('checkSlap', (player) => {
         slapType = checkForSlap(player);
-        io.emit('slap', (slapType, player));
+        io.emit('slap', slapType, player + 1);
     });
 
     // Starting the game
@@ -63,6 +63,7 @@ io.on('connection', (socket) => {
         io.emit('showCardCount', playerHands[0].length, playerHands[1].length);
         io.emit('gameStart');
         console.log('Game started');
+        io.emit('isTurn', currentPlayer + 1);
     });
 
     // Ending the game
@@ -78,9 +79,6 @@ server.listen(PORT, () => {
 }).on('error', (err) => {
     console.error('Server error:', err);
 });
-// server.listen(3000, () => {
-//     console.log('Server is listening on http://localhost:3000');
-// });
 
 
 // GAME LOGIC
@@ -149,10 +147,7 @@ function faceCardLimit(cardValue) {
 
 // Game Break Down
 function checkForWin() {
-    // Check if a slap is available
-    if (checkForSlap(-1)) {
-        return -1;
-    }
+    
     // Iterate through player hands and check if all but one have 0 cards
     let emptyHandCount = 0;
     let winner = 0;
@@ -164,7 +159,9 @@ function checkForWin() {
             winner = player;
         }
     }
-    if (emptyHandCount == playerHands.length - 1) {
+
+    // If only one player has cards and no slap is available, they win
+    if (emptyHandCount == playerHands.length - 1 && checkForSlap(-1) != -1) {
         return winner;
     }
     return -1;
@@ -198,13 +195,15 @@ function givePileTo(player) {
     faceCardTurns = 0;
 
     io.emit('isTurn', currentPlayer + 1);
+    // console.log('Gave pile to player ' + player)
 }
 
 // Places card on bottom of deck for incorrect slapper
-function slapPunishment(player) {
+async function slapPunishment(player) {
     justFalseSlapped = true;
     const card = playerHands[player].shift();
     pile.unshift(card);
+    await sleep(100);
     io.emit('falseSlap', card);
     io.emit('showCardCount', playerHands[0].length, playerHands[1].length);
     let winner = checkForWin();
@@ -217,11 +216,13 @@ function slapPunishment(player) {
 // Gives pile to slapper if it is, replaces bottom card if not
 function checkForSlap(slapper) {
     canSlap = -1;
+    // console.log(slapper + ' is checking for slap');
     if (pile.length < 2) return canSlap; // return if 1 or less cards
     
     // checks if two false slaps in a row
     if (justFalseSlapped && slapper != -1) { 
         slapPunishment(slapper);
+        // console.log('Double slapped');
         return canSlap;
     }
 
@@ -254,6 +255,7 @@ function checkForSlap(slapper) {
 
     // If correct slap for player, give them pile
     if (canSlap != -1 && slapper != -1) {
+        // console.log('Line 262: ' + canSlap);
         givePileTo(slapper);
         return canSlap;
     }
@@ -262,7 +264,7 @@ function checkForSlap(slapper) {
     if ( canSlap == -1 && slapper != -1) {
         slapPunishment(slapper);
     }
-
+    // console.log('Line 272: ' + canSlap);
     return canSlap;
 }
 
@@ -276,6 +278,7 @@ async function handleTurn(player) {
     // If a face has been played decrement turns available to play
     if (facePlayed) {
         faceCardTurns -= 1;
+        // console.log('face card turns is ' + faceCardTurns);
     }
 
     // Get name of top card
@@ -286,11 +289,12 @@ async function handleTurn(player) {
     if (topIsFace) {
         facePlayed = true; // Set true once one face has been played
         faceCardTurns = faceCardLimit(topCard);
+        // console.log('NEW face card turns is ' + faceCardTurns);
     }
 
     io.emit('updatePile', topCard);
     // Check if face card turns has hit 0 and give pile if it has
-    if (facePlayed && faceCardTurns == 0 && !checkForSlap(-1)) {
+    if (facePlayed && faceCardTurns == 0 && checkForSlap(-1) == -1) {
         await sleep(2000);
         if (currentPlayer == 1)
             givePileTo(0);

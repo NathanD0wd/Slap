@@ -5,7 +5,8 @@ let playerName = null;
 
 let gameRunning = false;
 let currentPlayer = 0; 
-let eventFlag = true; // Pauses all events while in sleep
+const MAX_EVENTS_SHOWED = 5;
+
 
 // Function to hide and display certain elements while game is or isn't running
 function updateVisibility() {
@@ -52,31 +53,41 @@ socket.on('updatePile', (topCard) => {
 
 // Alerts new bottom card on false slap
 socket.on('falseSlap', (card) => {
-    alert("New bottom card is " + card);
+    console.log('False slap, new bottom card is ' + card);
+    let happenings = document.getElementById('slaps');
+    happenings.innerHTML += `<p>New bottom card is ${card}</p>`;
+
+    // Remove slaps if over threshold
+    if (happenings.children.length > MAX_EVENTS_SHOWED) {
+        happenings.removeChild(happenings.firstChild);
+    }
 });
 
 socket.on('slap', (slapType, slapper) => {
+    console.log(slapType, slapper);
     let happenings = document.getElementById('slaps');
     switch(slapType) {
         case -1: 
-            happenings.innerHTML += `<p>Player ${slapper} did an oopsie...<p>`;
+            happenings.innerHTML += `<p>Player ${slapper} did an oopsie...</p>`;
             break;
         case 1:
-            happenings.innerHTML += `<p>Player ${slapper} slapped a pair!<p>`;
+            happenings.innerHTML += `<p>Player ${slapper} slapped a pair!</p>`;
             break;
         case 2:
-            happenings.innerHTML += `<p>Player ${slapper} slapped a sando!<p>`;
+            happenings.innerHTML += `<p>Player ${slapper} slapped a sando!</p>`;
             break;
         case 3:
-            happenings.innerHTML += `<p>Player ${slapper} slapped a mega sando!<p>`;
+            happenings.innerHTML += `<p>Player ${slapper} slapped a mega sando!</p>`;
             break;
         case 4:
-            happenings.innerHTML += `<p>Player ${slapper} slapped a marriage!<p>`;
+            happenings.innerHTML += `<p>Player ${slapper} slapped a marriage!</p>`;
             break;
         default: break;
     }
 
-    if (happenings.children.length > 5) {
+    // Removes events if over threshold
+    console.log(happenings.children.length);
+    if (happenings.children.length > MAX_EVENTS_SHOWED) {
         happenings.removeChild(happenings.firstChild);
     }
 });
@@ -86,6 +97,8 @@ socket.on('gameOver', (winner) => {
     gameRunning = false;
     alert('Player ' + winner + " is the winner!!!");
     updateVisibility();
+    let happenings = document.getElementById('slaps');
+    happenings.innerHTML = ``;
 });
 
 // Updates game has started
