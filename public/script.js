@@ -54,6 +54,16 @@ socket.on('falseSlap', (card) => {
     alert("New bottom card is " + card);
 });
 
+socket.on('slap', (slapType, slapper) => {
+    switch(slapType) {
+        case -1: alert('Player ' + slapper + ' did a bad slap...');
+        case 1: alert('Player' + slapper + ' slapped a pair!');
+        case 2: alert('Player' + slapper + ' slapped a sando!');
+        case 3: alert('Player' + slapper + ' slapped a mega sando!');
+        case 4: alert('Player' + slapper + ' slapped a marriage!');
+    }
+});
+
 // Updates game has ended
 socket.on('gameOver', (winner) => {
     gameRunning = false;

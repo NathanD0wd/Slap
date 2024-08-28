@@ -50,7 +50,8 @@ io.on('connection', (socket) => {
 
     // Slapping
     socket.on('slap', (player) => {
-        checkForSlap(player);
+        slapType = checkForSlap(player);
+        io.emit('slap', (slapType, slapper));
     });
 
     // Starting the game
@@ -213,13 +214,13 @@ function slapPunishment(player) {
 // Checks if slap is possible
 // Gives pile to slapper if it is, replaces bottom card if not
 function checkForSlap(slapper) {
-    canSlap = false;
+    canSlap = -1;
     if (pile.length < 2) return canSlap; // return if 1 or less cards
     
     // checks if two false slaps in a row
     if (justFalseSlapped && slapper != -1) { 
         slapPunishment(slapper);
-        return;
+        return canSlap;
     }
 
     const topCard = pile[pile.length - 1].split('-')[1];
@@ -227,26 +228,26 @@ function checkForSlap(slapper) {
 
     // Check for doubles
     if (topCard === secondCard) {
-        canSlap = true;
+        canSlap = 1;
     }
 
     // Check for marriage
     if ((topCard == 'K' && secondCard == 'Q') || (topCard == 'Q' && secondCard == 'K')) {
-        canSlap = true;
+        canSlap = 4;
     }
 
     // Check for sandwich
     if (pile.length >= 3) {
         const thirdCard = pile[pile.length - 3].split('-')[1];
         if (topCard === thirdCard) {
-            canSlap = true;
+            canSlap = 2;
         }
     }
 
     // Check for top and bottom match
     const bottomCard = pile[0].split('-')[1];
     if (topCard === bottomCard) {
-        canSlap = true;
+        canSlap = 3;
     }
 
     // If correct slap for player, give them pile
