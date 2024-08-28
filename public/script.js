@@ -69,7 +69,7 @@ socket.on('gameStart', () => {
 
 socket.on('isTurn', (player) => {
     if (player == playerNumber) {
-        let playerCardArea = document.getElementsByClassName('bottom-player-cards');
+        let playerCardArea = document.querySelector('bottom-player-cards');
         playerCardArea.classList.add('isTurn');
     }
 });
@@ -105,7 +105,7 @@ document.getElementById('bottom-player-area').addEventListener('click', () => {
 });
 
 // Plays card when press onto player pile
-document.getElementsByClassName('bottom-player-cards').addEventListener('click', () => {
+document.querySelector('.bottom-player-cards').addEventListener('click', () => {
     if (gameRunning == 1) {
         socket.emit('playCard', playerNumber - 1);
     }
