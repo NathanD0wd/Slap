@@ -287,8 +287,8 @@ async function handleTurn(player) {
 
     io.emit('updatePile', topCard);
     // Check if face card turns has hit 0 and give pile if it has
-    if (facePlayed && faceCardTurns == 0) {
-        await sleep(1000);
+    if (facePlayed && faceCardTurns == 0 && !checkForSlap(-1)) {
+        await sleep(2000);
         if (currentPlayer == 1)
             givePileTo(0);
         else
@@ -309,4 +309,6 @@ async function handleTurn(player) {
         else
             currentPlayer = 0;
     }
+
+    io.emit('isTurn', currentPlayer + 1);
 }

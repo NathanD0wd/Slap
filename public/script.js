@@ -30,8 +30,8 @@ socket.on('showCardCount', (player1CardCount, player2CardCount) => {
         opponent.innerHTML = `<p>Player 2: ${player2CardCount}</p>`;
     }
     else {
-        player.innerHTML = `<p>Player 1: ${player2CardCount}</p>`;
-        opponent.innerHTML = `<p>Player 2: ${player1CardCount}</p>`;
+        player.innerHTML = `<p>Player 2: ${player2CardCount}</p>`;
+        opponent.innerHTML = `<p>Player 1: ${player1CardCount}</p>`;
     }
 });
 
@@ -49,19 +49,29 @@ socket.on('updatePile', (topCard) => {
     cardPileDiv.innerHTML = `<img class="card-img" src="icons/cards/${topCard}.svg" alt="${topCard}">`;
 });
 
+// Alerts new bottom card on false slap
 socket.on('falseSlap', (card) => {
     alert("New bottom card is " + card);
 });
 
+// Updates game has ended
 socket.on('gameOver', (winner) => {
     gameRunning = false;
     alert('Player ' + winner + " is the winner!!!");
     updateVisibility();
 });
 
+// Updates game has started
 socket.on('gameStart', () => {
     gameRunning = true;
     updateVisibility();
+});
+
+socket.on('isTurn', (player) => {
+    if (player == playerNumber) {
+        let playerCardArea = document.getElementsByClassName('bottom-player-cards');
+        playerCardArea.classList.add('isTurn');
+    }
 });
 
 // Starts game when enter is pressed and a game is not already running
@@ -95,14 +105,14 @@ document.getElementById('bottom-player-area').addEventListener('click', () => {
 });
 
 // Plays card when press onto player pile
-// document.getElementById('bottom-player-cards').addEventListener('click', () => {
-//     if (gameRunning == 1) {
-//         socket.emit('playCard', playerNumber - 1);
-//     }
-//     else {
-//         socket.emit('startGame');
-//     }
-// });
+document.getElementsByClassName('bottom-player-cards').addEventListener('click', () => {
+    if (gameRunning == 1) {
+        socket.emit('playCard', playerNumber - 1);
+    }
+    else {
+        socket.emit('startGame');
+    }
+});
 
 // Restart the game with esc
 document.addEventListener('keydown', function(event) {
@@ -119,6 +129,7 @@ socket.on('playerAssigned', (number) => {
     alert(`You are Player ${playerNumber}`);
 });
 
+// Tells new entrant room is full
 socket.on('roomFull', () => {
     window.onload = function() {
         alert('The room is full. Please try again later.');

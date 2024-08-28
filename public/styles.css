@@ -171,3 +171,7 @@ p {
 .hidden {
     display: none;
 }
+
+.isTurn {
+    border: 10px solid #01270f;
+}
