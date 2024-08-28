@@ -69,7 +69,7 @@ socket.on('gameStart', () => {
 
 socket.on('isTurn', (player) => {
     if (player == playerNumber) {
-        let playerCardArea = document.querySelector('bottom-player-cards');
+        let playerCardArea = document.querySelector('.bottom-player-cards');
         playerCardArea.classList.add('isTurn');
     }
 });
