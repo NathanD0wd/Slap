@@ -51,7 +51,7 @@ io.on('connection', (socket) => {
     // Slapping
     socket.on('slap', (player) => {
         slapType = checkForSlap(player);
-        io.emit('slap', (slapType, slapper));
+        io.emit('slap', (slapType, player));
     });
 
     // Starting the game
