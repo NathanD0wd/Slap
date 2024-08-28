@@ -59,7 +59,7 @@ io.on('connection', (socket) => {
         // Initialize Game
         createDeck();
         dealCards();
-        io.emit('updatePile', '');
+        io.emit('updatePile', '', -1);
         io.emit('showCardCount', playerHands[0].length, playerHands[1].length);
         io.emit('gameStart');
         console.log('Game started');
@@ -161,7 +161,7 @@ function checkForWin() {
     }
 
     // If only one player has cards and no slap is available, they win
-    if (emptyHandCount == playerHands.length - 1 && checkForSlap(-1) != -1) {
+    if (emptyHandCount == playerHands.length - 1 && checkForSlap(-1) == -1) {
         return winner;
     }
     return -1;
@@ -175,14 +175,14 @@ function endGame(winner) {
     pile = [];
     currentPlayer = 0;
     io.emit('showCardCount', playerHands[0].length, playerHands[1].length);
-    io.emit('updatePile', '');
+    io.emit('updatePile', '', -1);
 }
 
 // Gives middle pile to specified player
 function givePileTo(player) {
     playerHands[player] = playerHands[player].concat(pile);
     pile = [];
-    io.emit('updatePile', '');
+    io.emit('updatePile', '', -1);
     io.emit('showCardCount', playerHands[0].length, playerHands[1].length);
     currentPlayer = player;
 
@@ -292,7 +292,7 @@ async function handleTurn(player) {
         // console.log('NEW face card turns is ' + faceCardTurns);
     }
 
-    io.emit('updatePile', topCard);
+    io.emit('updatePile', topCard, currentPlayer);
     // Check if face card turns has hit 0 and give pile if it has
     if (facePlayed && faceCardTurns == 0 && checkForSlap(-1) == -1) {
         await sleep(2000);

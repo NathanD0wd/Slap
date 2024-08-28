@@ -38,7 +38,7 @@ socket.on('showCardCount', (player1CardCount, player2CardCount) => {
 });
 
 // Updates center pile to show top card
-socket.on('updatePile', (topCard) => {
+socket.on('updatePile', (topCard, player) => {
     // Select the div with id 'card-pile'
     let cardPileDiv = document.getElementById('card-pile');
 
@@ -49,6 +49,17 @@ socket.on('updatePile', (topCard) => {
 
     // Set the innerHTML to display the SVG
     cardPileDiv.innerHTML = `<img class="card-img" src="icons/cards/${topCard}.svg" alt="${topCard}">`;
+
+    // Update happenings if there is a player
+    if (player != -1) {
+        let happenings = document.getElementById('slaps');
+        happenings.innerHTML += `<p>Player ${player + 1} played ${card}</p>`;
+
+        // Remove slaps if over threshold
+        if (happenings.children.length > MAX_EVENTS_SHOWED) {
+            happenings.removeChild(happenings.firstChild);
+        }
+    }
 });
 
 // Alerts new bottom card on false slap
