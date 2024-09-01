@@ -100,7 +100,7 @@ socket.on('updatePile', async (topCard, player) => {
     // Update happenings if there is a player
     if (player != -1) {
         let happenings = document.getElementById('slaps');
-        if (player == 1) {
+        if (player == 0) {
             happenings.innerHTML += `<p>${player1Name} played ${topCard}</p>`;
         }
         else {
@@ -149,7 +149,6 @@ socket.on('slap', (slapType, slapper) => {
     }
 
     // Removes events if over threshold
-    console.log(happenings.children.length);
     if (happenings.children.length > MAX_EVENTS_SHOWED) {
         happenings.removeChild(happenings.firstChild);
     }
