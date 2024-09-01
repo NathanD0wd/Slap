@@ -231,7 +231,7 @@ async function slapPunishment(player) {
 // Checks if slap is possible
 // Gives pile to slapper if it is, replaces bottom card if not
 function checkForSlap(slapper) {
-    canSlap = -1;
+    canSlap = 1;
     // console.log(slapper + ' is checking for slap');
     if (pile.length < 2) return canSlap; // return if 1 or less cards
     
