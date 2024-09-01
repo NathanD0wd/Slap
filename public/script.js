@@ -157,10 +157,15 @@ socket.on('slap', (slapType, slapper) => {
 // Updates game has ended
 socket.on('gameOver', (winner) => {
     gameRunning = false;
-    alert('Player ' + winner + " is the winner!!!");
-    updateVisibility();
     let happenings = document.getElementById('slaps');
     happenings.innerHTML = ``;
+    if (winner == 0) {
+        happenings.innerHTML += `<p>${player1Name} is the winner!!</p>`;
+    }
+    else {
+        happenings.innerHTML += `<p>${player2Name} is the winner!!</p>`; 
+    }
+    updateVisibility();
 });
 
 // Updates game has started

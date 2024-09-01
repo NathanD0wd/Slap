@@ -184,14 +184,19 @@ function checkForWin() {
 }
 
 // GBD
-function endGame(winner) {
-    io.emit('gameOver', winner);
+async function endGame(winner) {
+    await sleep(1000);
     deck = [];
     playerHands = [[], []];
     pile = [];
     currentPlayer = 0;
     io.emit('showCardCount', playerHands[0].length, playerHands[1].length);
     io.emit('updatePile', '', -1);
+    topIsFace = false;
+    facePlayed = false;
+    faceCardTurns = 0;
+    justFalseSlapped = false;
+    io.emit('gameOver', winner);
 }
 
 // Gives middle pile to specified player
@@ -232,11 +237,11 @@ async function slapPunishment(player) {
 // Gives pile to slapper if it is, replaces bottom card if not
 function checkForSlap(slapper) {
     canSlap = -1;
-    // console.log(slapper + ' is checking for slap');
+    console.log(slapper + ' is checking for slap');
     if (pile.length < 2) return canSlap; // return if 1 or less cards
     
     // checks if two false slaps in a row
-    if (justFalseSlapped /*&& slapper != -1*/) { 
+    if (justFalseSlapped && slapper != -1) { 
         slapPunishment(slapper);
         // console.log('Double slapped');
         return canSlap;
@@ -277,7 +282,7 @@ function checkForSlap(slapper) {
     }
 
     // Punishment if you can't slap
-    if ( canSlap == -1 /*&& slapper != -1*/) {
+    if ( canSlap == -1 && slapper != -1) {
         slapPunishment(slapper);
     }
     // console.log('Line 272: ' + canSlap);
