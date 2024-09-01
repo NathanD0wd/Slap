@@ -21,7 +21,7 @@ io.on('connection', (socket) => {
         if (players.length == 1 && players[0].number == 1) {
             playerNumber = 2;
         }
-        players.push({ id: socket.id, number: playerNumber });
+        players.push({ id: socket.id, number: playerNumber , playerName: null});
 
         socket.emit('playerAssigned', playerNumber);
         console.log(`Assigned Player ${playerNumber} to socket ${socket.id}`);
@@ -41,6 +41,17 @@ io.on('connection', (socket) => {
     });
 
     // PLAYER ACTIONS
+    // Sets names
+    socket.on('setPlayerName', (playerName,playerNumber) => {
+        if (players[0].number == playerNumber) {
+            players[0].name = playerName;
+        }
+        else {
+            players[1].name = playerName;
+        }
+        io.emit('assignedName', playerName, playerNumber);
+    });
+
     // Playing a card
     socket.on('playCard', (player) => {
         if (player == currentPlayer) {
@@ -51,7 +62,7 @@ io.on('connection', (socket) => {
     // Slapping
     socket.on('checkSlap', (player) => {
         slapType = checkForSlap(player);
-        io.emit('slap', slapType, player + 1);
+        io.emit('slap', slapType, players[player].name);
     });
 
     // Starting the game

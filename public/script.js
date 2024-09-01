@@ -1,12 +1,47 @@
 // Server info
 const socket = io();
 let playerNumber = null;
-let playerName = null;
+let player1Name = null;
+let player2Name = null;
 
 let gameRunning = false;
 let currentPlayer = 0; 
 const MAX_EVENTS_SHOWED = 5;
 
+// When a player joins get a name
+function askPlayerName() {
+    let playerName = '';
+
+    while (playerName === '' || playerName.length > 15) {
+        playerName = prompt('Please enter your name (max 15 characters):');
+
+        if (playerName === null) {
+            playerName = 'Player ' + playerNumber; // Default name if they cancel
+            break;
+        } else if (playerName.length > 15) {
+            alert('Name too long! Please enter a name with a maximum of 15 characters.');
+        } else if (playerName === '') {
+            alert('Name cannot be empty! Please enter a valid name.');
+        }
+    }
+
+    return playerName;
+}
+
+// When server assigns name, also locally assign name
+socket.on('assignedName', (name, number) => {
+    let happenings = document.getElementById('slaps');
+    happenings.innerHTML += `<p>${name} joined the game</p>`;
+    if (number == playerNumber) {
+        happenings.innerHTML += `<p>That is to say, you did</p>`;
+    }
+    if (number == 1) {
+        player1Name = name;
+    }
+    else {
+        player2Name = name;
+    }
+});
 
 // Function to hide and display certain elements while game is or isn't running
 function updateVisibility() {
@@ -28,12 +63,12 @@ socket.on('showCardCount', (player1CardCount, player2CardCount) => {
     let opponent = document.getElementById('top-player-area');
 
     if (playerNumber == 1) { 
-        player.innerHTML = `<p>Player 1: ${player1CardCount}</p>`;
-        opponent.innerHTML = `<p>Player 2: ${player2CardCount}</p>`;
+        player.innerHTML = `<p>${Player1Name}: ${player1CardCount}</p>`;
+        opponent.innerHTML = `<p>${Player2Name}: ${player2CardCount}</p>`;
     }
     else {
-        player.innerHTML = `<p>Player 2: ${player2CardCount}</p>`;
-        opponent.innerHTML = `<p>Player 1: ${player1CardCount}</p>`;
+        player.innerHTML = `<p>${Player2Name}: ${player2CardCount}</p>`;
+        opponent.innerHTML = `<p>${Player1Name}: ${player1CardCount}</p>`;
     }
 });
 
@@ -53,7 +88,12 @@ socket.on('updatePile', (topCard, player) => {
     // Update happenings if there is a player
     if (player != -1) {
         let happenings = document.getElementById('slaps');
-        happenings.innerHTML += `<p>Player ${player + 1} played ${card}</p>`;
+        if (player == 1) {
+            happenings.innerHTML += `<p>${player1Name} played ${card}</p>`;
+        }
+        else {
+            happenings.innerHTML += `<p>${player2Name} played ${card}</p>`;
+        }
 
         // Remove slaps if over threshold
         if (happenings.children.length > MAX_EVENTS_SHOWED) {
@@ -79,19 +119,19 @@ socket.on('slap', (slapType, slapper) => {
     let happenings = document.getElementById('slaps');
     switch(slapType) {
         case -1: 
-            happenings.innerHTML += `<p>Player ${slapper} did an oopsie...</p>`;
+            happenings.innerHTML += `<p>${slapper} did an oopsie...</p>`;
             break;
         case 1:
-            happenings.innerHTML += `<p>Player ${slapper} slapped a pair!</p>`;
+            happenings.innerHTML += `<p>${slapper} slapped a pair!</p>`;
             break;
         case 2:
-            happenings.innerHTML += `<p>Player ${slapper} slapped a sando!</p>`;
+            happenings.innerHTML += `<p>${slapper} slapped a sando!</p>`;
             break;
         case 3:
-            happenings.innerHTML += `<p>Player ${slapper} slapped a mega sando!</p>`;
+            happenings.innerHTML += `<p>${slapper} slapped a mega sando!</p>`;
             break;
         case 4:
-            happenings.innerHTML += `<p>Player ${slapper} slapped a marriage!</p>`;
+            happenings.innerHTML += `<p>${slapper} slapped a marriage!</p>`;
             break;
         default: break;
     }
@@ -180,9 +220,12 @@ document.addEventListener('keydown', function(event) {
 
 // SERVER CONTROLS START HERE
 
-// Upon entering website assigns player number
+// Upon entering website assigns player number and gets name input
 socket.on('playerAssigned', (number) => {
     playerNumber = number;
+    console.log('playerAssigned');
+    let playerName = askPlayerName();
+    socket.emit('setPlayerName', playerName, playerNumber);
     alert(`You are Player ${playerNumber}`);
 });
 
