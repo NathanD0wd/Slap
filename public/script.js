@@ -63,12 +63,12 @@ socket.on('showCardCount', (player1CardCount, player2CardCount) => {
     let opponent = document.getElementById('top-player-area');
 
     if (playerNumber == 1) { 
-        player.innerHTML = `<p>${Player1Name}: ${player1CardCount}</p>`;
-        opponent.innerHTML = `<p>${Player2Name}: ${player2CardCount}</p>`;
+        player.innerHTML = `<p>${player1Name}: ${player1CardCount}</p>`;
+        opponent.innerHTML = `<p>${player2Name}: ${player2CardCount}</p>`;
     }
     else {
-        player.innerHTML = `<p>${Player2Name}: ${player2CardCount}</p>`;
-        opponent.innerHTML = `<p>${Player1Name}: ${player1CardCount}</p>`;
+        player.innerHTML = `<p>${player2Name}: ${player2CardCount}</p>`;
+        opponent.innerHTML = `<p>${player1Name}: ${player1CardCount}</p>`;
     }
 });
 
@@ -89,10 +89,10 @@ socket.on('updatePile', (topCard, player) => {
     if (player != -1) {
         let happenings = document.getElementById('slaps');
         if (player == 1) {
-            happenings.innerHTML += `<p>${player1Name} played ${card}</p>`;
+            happenings.innerHTML += `<p>${player1Name} played ${topCard}</p>`;
         }
         else {
-            happenings.innerHTML += `<p>${player2Name} played ${card}</p>`;
+            happenings.innerHTML += `<p>${player2Name} played ${topCard}</p>`;
         }
 
         // Remove slaps if over threshold
