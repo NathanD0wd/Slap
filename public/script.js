@@ -161,9 +161,11 @@ socket.on('gameOver', (winner) => {
     happenings.innerHTML = ``;
     if (winner == 0) {
         happenings.innerHTML += `<p>${player1Name} is the winner!!</p>`;
+        happenings.innerHTML += `<p>And ${player2Name} sucks!!</p>`;
     }
     else {
-        happenings.innerHTML += `<p>${player2Name} is the winner!!</p>`; 
+        happenings.innerHTML += `<p>${player2Name} is the winner!!</p>`;
+        happenings.innerHTML += `<p>And ${player1Name} sucks!!</p>`; 
     }
     updateVisibility();
 });
