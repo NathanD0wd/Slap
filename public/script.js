@@ -3,6 +3,7 @@ const socket = io();
 let playerNumber = null;
 let player1Name = null;
 let player2Name = null;
+let introduced = false;
 
 let gameRunning = false;
 let currentPlayer = 0; 
@@ -37,15 +38,18 @@ function askPlayerName() {
 // When server assigns name, also locally assign name
 socket.on('assignedName', (name, number) => {
     let happenings = document.getElementById('slaps');
-    happenings.innerHTML += `<p>${name} joined the game</p>`;
-    if (number == playerNumber) {
-        happenings.innerHTML += `<p>That is to say, you did</p>`;
-    }
-    if (number == 1) {
-        player1Name = name;
-    }
-    else {
-        player2Name = name;
+    if (introduced == false || number != playerNumber) {
+        happenings.innerHTML += `<p>${name} joined the game</p>`;
+        if (number == playerNumber) {
+            happenings.innerHTML += `<p>That is to say, you did</p>`;
+            introduced = true;
+        }
+        if (number == 1) {
+            player1Name = name;
+        }
+        else {
+            player2Name = name;
+        }
     }
 });
 
