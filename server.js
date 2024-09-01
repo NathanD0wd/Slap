@@ -23,6 +23,9 @@ io.on('connection', (socket) => {
         }
         players.push({ id: socket.id, number: playerNumber , playerName: null});
 
+        // Add first players name if you join second
+        io.emit('assignedName', players[0].name, players[0].number);
+
         socket.emit('playerAssigned', playerNumber);
         console.log(`Assigned Player ${playerNumber} to socket ${socket.id}`);
     } else {

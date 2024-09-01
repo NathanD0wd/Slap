@@ -8,6 +8,12 @@ let gameRunning = false;
 let currentPlayer = 0; 
 const MAX_EVENTS_SHOWED = 5;
 
+
+// Utility sleep function that returns a promise
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 // When a player joins get a name
 function askPlayerName() {
     let playerName = '';
@@ -73,7 +79,7 @@ socket.on('showCardCount', (player1CardCount, player2CardCount) => {
 });
 
 // Updates center pile to show top card
-socket.on('updatePile', (topCard, player) => {
+socket.on('updatePile', async (topCard, player) => {
     // Select the div with id 'card-pile'
     let cardPileDiv = document.getElementById('card-pile');
 
@@ -84,6 +90,8 @@ socket.on('updatePile', (topCard, player) => {
 
     // Set the innerHTML to display the SVG
     cardPileDiv.innerHTML = `<img class="card-img" src="icons/cards/${topCard}.svg" alt="${topCard}">`;
+
+    await sleep(500);
 
     // Update happenings if there is a player
     if (player != -1) {
