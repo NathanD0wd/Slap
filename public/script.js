@@ -6,7 +6,7 @@ let player2Name = null;
 
 let gameRunning = false;
 let currentPlayer = 0; 
-const MAX_EVENTS_SHOWED = 5;
+const MAX_EVENTS_SHOWED = 12;
 
 
 // Utility sleep function that returns a promise
