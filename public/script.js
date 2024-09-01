@@ -238,7 +238,6 @@ socket.on('playerAssigned', (number) => {
     console.log('playerAssigned');
     let playerName = askPlayerName();
     socket.emit('setPlayerName', playerName, playerNumber);
-    alert(`You are Player ${playerNumber}`);
 });
 
 // Tells new entrant room is full
