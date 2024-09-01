@@ -231,12 +231,12 @@ async function slapPunishment(player) {
 // Checks if slap is possible
 // Gives pile to slapper if it is, replaces bottom card if not
 function checkForSlap(slapper) {
-    canSlap = 1;
+    canSlap = -1;
     // console.log(slapper + ' is checking for slap');
     if (pile.length < 2) return canSlap; // return if 1 or less cards
     
     // checks if two false slaps in a row
-    if (justFalseSlapped && slapper != -1) { 
+    if (justFalseSlapped /*&& slapper != -1*/) { 
         slapPunishment(slapper);
         // console.log('Double slapped');
         return canSlap;
@@ -277,7 +277,7 @@ function checkForSlap(slapper) {
     }
 
     // Punishment if you can't slap
-    if ( canSlap == -1 && slapper != -1) {
+    if ( canSlap == -1 /*&& slapper != -1*/) {
         slapPunishment(slapper);
     }
     // console.log('Line 272: ' + canSlap);
