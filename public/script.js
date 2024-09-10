@@ -95,7 +95,7 @@ socket.on('updatePile', async (topCard, player) => {
     // Set the innerHTML to display the SVG
     cardPileDiv.innerHTML = `<img class="card-img" src="icons/cards/${topCard}.svg" alt="${topCard}">`;
 
-    await sleep(500);
+    // await sleep(500);
 
     // Update happenings if there is a player
     if (player != -1) {
